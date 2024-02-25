@@ -2,47 +2,81 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createHashRouter, RouterProvider } from "react-router-dom";
 import DashboardPage from "./components/DashboardPage";
 import ResidentsPage from "./components/ResidentsPage";
 import ResidentPage from "./components/ResidentPage";
 import HouseholdsPage from "./components/HouseholdsPage";
+import LoginPage from "./components/LoginPage";
+import RequireAuth from "./components/RequireAuth";
+import AuthProvider from "react-auth-kit/AuthProvider";
+import createStore from "react-auth-kit/createStore";
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: "/",
     element: <App />,
     children: [
       {
         path: "/",
-        element: <DashboardPage />,
+        element: (
+          <RequireAuth>
+            <DashboardPage />
+          </RequireAuth>
+        ),
       },
       {
         path: "/residents",
-        element: <ResidentsPage />,
+        element: (
+          <RequireAuth>
+            <ResidentsPage />
+          </RequireAuth>
+        ),
         errorElement: <div>404 NOT FOUND</div>,
       },
       {
         path: "/residents/:residentId",
-        element: <ResidentPage />,
+        element: (
+          <RequireAuth>
+            <ResidentPage />
+          </RequireAuth>
+        ),
         errorElement: <div>404 NOT FOUND</div>,
       },
       {
         path: "/households",
-        element: <HouseholdsPage />,
+        element: (
+          <RequireAuth>
+            <HouseholdsPage />
+          </RequireAuth>
+        ),
         errorElement: <div>404 NOT FOUND</div>,
       },
     ],
     errorElement: <div>404 NOT FOUND</div>,
   },
+  {
+    path: "/login",
+    element: <LoginPage />,
+    errorElement: <div>404 NOT FOUND</div>,
+  },
 ]);
+
+const store = createStore({
+  authName: "_auth",
+  authType: "cookie",
+  cookieDomain: window.location.hostname,
+  cookieSecure: window.location.protocol === "https:",
+});
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider store={store}>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </React.StrictMode>
 );
 
