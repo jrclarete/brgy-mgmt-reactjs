@@ -5,14 +5,30 @@ import Navbar from "react-bootstrap/Navbar";
 import { NavLink } from "react-router-dom";
 import useSignOut from "react-auth-kit/hooks/useSignOut";
 import { useNavigate } from "react-router";
+import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
+import { JwtPayload, jwtDecode } from "jwt-decode";
 
 const NavbarHeader = () => {
   const signOut = useSignOut();
   const navigate = useNavigate();
 
+  const authHeader = useAuthHeader()!;
+  const decoded = jwtDecode(authHeader);
+  const decodedString = JSON.parse(JSON.stringify(decoded));
+
   const signOutMethod = () => {
     signOut();
     navigate("/login");
+  };
+
+  const renderBrgyInfoLink = () => {
+    if (decodedString.BRGY_INFO) {
+      return (
+        <Nav.Link as={NavLink} to="/brgy-info">
+          Brgy Info
+        </Nav.Link>
+      );
+    }
   };
 
   return (
@@ -31,6 +47,7 @@ const NavbarHeader = () => {
               <Nav.Link as={NavLink} to="/households">
                 Households
               </Nav.Link>
+              {renderBrgyInfoLink()}
             </Nav>
             <Form className="d-flex">
               <Button variant="outline-light" onClick={signOutMethod}>

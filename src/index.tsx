@@ -11,6 +11,7 @@ import LoginPage from "./components/LoginPage";
 import RequireAuth from "./components/RequireAuth";
 import AuthProvider from "react-auth-kit/AuthProvider";
 import createStore from "react-auth-kit/createStore";
+import BrgyInfoPage from "./components/BrgyInfoPage";
 
 const router = createHashRouter([
   {
@@ -48,6 +49,15 @@ const router = createHashRouter([
         element: (
           <RequireAuth>
             <HouseholdsPage />
+          </RequireAuth>
+        ),
+        errorElement: <div>404 NOT FOUND</div>,
+      },
+      {
+        path: "/brgy-info",
+        element: (
+          <RequireAuth>
+            <BrgyInfoPage />
           </RequireAuth>
         ),
         errorElement: <div>404 NOT FOUND</div>,
