@@ -1,32 +1,57 @@
-import { Button, Form } from "react-bootstrap";
-import Container from "react-bootstrap/Container";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
+import {
+  Button,
+  Container,
+  Form,
+  Nav,
+  NavDropdown,
+  Navbar,
+} from "react-bootstrap";
 import { NavLink } from "react-router-dom";
-import useSignOut from "react-auth-kit/hooks/useSignOut";
+import CheckAuthorization from "./CheckAuthorization";
 import { useNavigate } from "react-router";
-import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
-import { JwtPayload, jwtDecode } from "jwt-decode";
+import useSignOut from "react-auth-kit/hooks/useSignOut";
+import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 
 const NavbarHeader = () => {
   const signOut = useSignOut();
   const navigate = useNavigate();
-
-  const authHeader = useAuthHeader()!;
-  const decoded = jwtDecode(authHeader);
-  const decodedString = JSON.parse(JSON.stringify(decoded));
+  let authAnyType: any;
+  authAnyType = useAuthUser();
 
   const signOutMethod = () => {
     signOut();
     navigate("/login");
   };
 
-  const renderBrgyInfoLink = () => {
-    if (decodedString.BRGY_INFO) {
+  const renderResidentNavbar = () => {
+    if (CheckAuthorization("RESIDENT", ["READ"])) {
       return (
-        <Nav.Link as={NavLink} to="/brgy-info">
-          Brgy Info
+        <Nav.Link as={NavLink} to="/residents">
+          Residents
         </Nav.Link>
+      );
+    }
+  };
+
+  const renderHouseholdNavbar = () => {
+    if (CheckAuthorization("HOUSEHOLD", ["READ"])) {
+      return (
+        <Nav.Link as={NavLink} to="/households">
+          Households
+        </Nav.Link>
+      );
+    }
+  };
+
+  const renderBrgyInfoNavbar = () => {
+    if (CheckAuthorization("BRGY_INFO", ["READ"])) {
+      return (
+        /*<Nav.Link as={NavLink} to="/brgy-info">
+          Brgy Info
+        </Nav.Link>*/
+        <NavDropdown.Item as={NavLink} to="/brgy-info">
+          Brgy Info
+        </NavDropdown.Item>
       );
     }
   };
@@ -41,19 +66,18 @@ const NavbarHeader = () => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
-              <Nav.Link as={NavLink} to="/residents">
-                Residents
-              </Nav.Link>
-              <Nav.Link as={NavLink} to="/households">
-                Households
-              </Nav.Link>
-              {renderBrgyInfoLink()}
+              {renderResidentNavbar()}
+              {renderHouseholdNavbar()}
             </Nav>
-            <Form className="d-flex">
-              <Button variant="outline-light" onClick={signOutMethod}>
-                Logout
-              </Button>
-            </Form>
+            <Nav className="justify-content-end flex-grow-1 pe-3">
+              <NavDropdown title={authAnyType.userName}>
+                {renderBrgyInfoNavbar()}
+                {/*<NavDropdown.Divider />*/}
+                <NavDropdown.Item onClick={signOutMethod}>
+                  Logout
+                </NavDropdown.Item>
+              </NavDropdown>
+            </Nav>
           </Navbar.Collapse>
         </Container>
       </Navbar>
