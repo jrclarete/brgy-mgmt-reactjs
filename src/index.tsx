@@ -21,7 +21,7 @@ const router = createHashRouter([
       {
         path: "/",
         element: (
-          <RequireAuth>
+          <RequireAuth roleModule="DASHBOARD">
             <DashboardPage />
           </RequireAuth>
         ),
@@ -29,46 +29,41 @@ const router = createHashRouter([
       {
         path: "/residents",
         element: (
-          <RequireAuth>
+          <RequireAuth roleModule="RESIDENT" roleClaim={["READ"]}>
             <ResidentsPage />
           </RequireAuth>
         ),
-        errorElement: <div>404 NOT FOUND</div>,
       },
       {
         path: "/residents/:residentId",
         element: (
-          <RequireAuth>
+          <RequireAuth roleModule="RESIDENT" roleClaim={["READ"]}>
             <ResidentPage />
           </RequireAuth>
         ),
-        errorElement: <div>404 NOT FOUND</div>,
       },
       {
         path: "/households",
         element: (
-          <RequireAuth>
+          <RequireAuth roleModule="HOUSEHOLD" roleClaim={["READ"]}>
             <HouseholdsPage />
           </RequireAuth>
         ),
-        errorElement: <div>404 NOT FOUND</div>,
       },
       {
         path: "/brgy-info",
         element: (
-          <RequireAuth>
+          <RequireAuth roleModule="BRGY_INFO" roleClaim={["READ"]}>
             <BrgyInfoPage />
           </RequireAuth>
         ),
-        errorElement: <div>404 NOT FOUND</div>,
       },
     ],
-    errorElement: <div>404 NOT FOUND</div>,
+    errorElement: <div>404 NOT FOUND here</div>,
   },
   {
     path: "/login",
     element: <LoginPage />,
-    errorElement: <div>404 NOT FOUND</div>,
   },
 ]);
 
