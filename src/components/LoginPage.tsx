@@ -8,6 +8,12 @@ import { JwtPayload, jwtDecode } from "jwt-decode";
 
 type Props = {};
 
+export interface UserStateModel {
+  email: string;
+  uid: string;
+  userName: string;
+}
+
 const client = axios.create({
   baseURL: "/api/account/login",
 });
@@ -40,7 +46,7 @@ const LoginPage = (props: Props) => {
               email: response.data.email,
               uid: response.data.id,
               userName: response.data.userName,
-            },
+            } as UserStateModel,
           })
         ) {
           navigate(from, { replace: true });

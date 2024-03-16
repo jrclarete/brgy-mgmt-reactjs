@@ -11,12 +11,12 @@ import CheckAuthorization from "./CheckAuthorization";
 import { useNavigate } from "react-router";
 import useSignOut from "react-auth-kit/hooks/useSignOut";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
+import { UserStateModel } from "./LoginPage";
 
 const NavbarHeader = () => {
   const signOut = useSignOut();
   const navigate = useNavigate();
-  let authAnyType: any;
-  authAnyType = useAuthUser();
+  const authAnyType = useAuthUser<UserStateModel>();
 
   const signOutMethod = () => {
     signOut();
@@ -70,7 +70,7 @@ const NavbarHeader = () => {
               {renderHouseholdNavbar()}
             </Nav>
             <Nav className="justify-content-end flex-grow-1 pe-3">
-              <NavDropdown title={authAnyType.userName}>
+              <NavDropdown title={authAnyType?.userName}>
                 {renderBrgyInfoNavbar()}
                 {/*<NavDropdown.Divider />*/}
                 <NavDropdown.Item onClick={signOutMethod}>
